@@ -24,7 +24,7 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public StatDtoInput createStat(StatDtoInput statDtoInput) {
-        final Stat stat = statRepository.save(StatMapper.INSTANCE.toStat(statDtoInput));
+        Stat stat = statRepository.save(StatMapper.INSTANCE.toStat(statDtoInput));
         log.info("Элемент статистики добавлен в БД {}.", stat);
         return StatMapper.INSTANCE.toStatDtoInput(stat);
     }

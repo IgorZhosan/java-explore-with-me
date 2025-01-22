@@ -6,13 +6,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,15 +23,19 @@ public class Stat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "app", nullable = false)
+    @Column(name = "app")
+    @NotBlank(message = "Поле 'app' не должно быть пустым")
     private String app;
 
-    @Column(name = "uri", nullable = false)
+    @Column(name = "uri")
+    @NotBlank(message = "Поле 'uri' не должно быть пустым")
     private String uri;
 
-    @Column(name = "ip", nullable = false)
+    @Column(name = "ip")
+    @NotBlank(message = "Поле 'ip' не должно быть пустым")
     private String ip;
 
-    @Column(name = "time_stamp", nullable = false)
+    @Column(name = "time_stamp")
+    @NotNull(message = "Поле 'timestamp' не должно быть null")
     private LocalDateTime timestamp;
 }
