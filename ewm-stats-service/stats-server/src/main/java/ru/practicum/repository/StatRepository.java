@@ -29,7 +29,7 @@ public interface StatRepository extends JpaRepository<Stat, Long> {
             ORDER BY COUNT(DISTINCT s.ip) DESC
             """)
     List<StatDtoOutput> findAllWithUniqueIpWithoutUris(LocalDateTime start,
-                                                    LocalDateTime end);
+                                                       LocalDateTime end);
 
     @Query("""
             SELECT new ru.practicum.StatDtoOutput(s.ip, s.uri, COUNT(s.ip))
@@ -39,8 +39,8 @@ public interface StatRepository extends JpaRepository<Stat, Long> {
             ORDER BY COUNT (s.ip) DESC
             """)
     List<StatDtoOutput> findAllWithUris(List<String> uris,
-                                     LocalDateTime start,
-                                     LocalDateTime end);
+                                        LocalDateTime start,
+                                        LocalDateTime end);
 
     @Query("""
             SELECT new ru.practicum.StatDtoOutput(s.ip, s.uri, COUNT(s.ip))
@@ -50,6 +50,6 @@ public interface StatRepository extends JpaRepository<Stat, Long> {
             ORDER BY COUNT (s.ip) DESC
             """)
     List<StatDtoOutput> findAllWithoutUris(LocalDateTime start,
-                                        LocalDateTime end);
+                                           LocalDateTime end);
 
 }
