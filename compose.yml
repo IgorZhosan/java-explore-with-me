@@ -23,6 +23,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=12345
 
+
   ewm-main-service:
     build: ewm-main-service
     image: ewm-main-service-image
@@ -31,10 +32,11 @@ services:
       - "8080:8080"
     depends_on:
       - ewm-db
+      - stats-server
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-main
       - SPRING_DATASOURCE_USER=postgres
-      - SPRING_DATASOURCE_PASSWORD=12319Hsp!
+      - SPRING_DATASOURCE_PASSWORD=12345
       - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
 
   ewm-db:
