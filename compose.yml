@@ -10,7 +10,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewm-stats
       - SPRING_DATASOURCE_USER=postgres
-      - SPRING_DATASOURCE_PASSWORD=12319Hsp!
+      - SPRING_DATASOURCE_PASSWORD=12345
       - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
 
   stats-db:
@@ -21,7 +21,7 @@ services:
     environment:
       - POSTGRES_DB=ewm-stats
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=12319Hsp!
+      - POSTGRES_PASSWORD=12345
 
   ewm-main-service:
     build: ewm-main-service
@@ -45,4 +45,4 @@ services:
     environment:
       - POSTGRES_DB=ewm-main
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=12319Hsp!
+      - POSTGRES_PASSWORD=12345
