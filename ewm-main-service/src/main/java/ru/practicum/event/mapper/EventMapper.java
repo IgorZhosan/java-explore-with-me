@@ -2,22 +2,27 @@ package ru.practicum.event.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import ru.practicum.User.dto.UserDtoShort;
 import ru.practicum.User.model.User;
+import ru.practicum.category.dto.CategoryOutputDto;
 import ru.practicum.category.model.Category;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventNewDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.model.Event;
+import ru.practicum.event.model.EventState;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface EventMapper {
-    EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "state", expression = "java(EventState.PENDING)")
+    @Mapping(
+            target = "state",
+            expression = "java(ru.practicum.event.model.EventState.PENDING)"
+    )
     @Mapping(target = "initiator", source = "initiator")
     @Mapping(target = "category", source = "category")
     @Mapping(target = "confirmedRequests", constant = "0")
@@ -29,15 +34,24 @@ public interface EventMapper {
     @Mapping(target = "participantLimit", source = "eventRequestDto.participantLimit")
     @Mapping(target = "requestModeration", source = "eventRequestDto.requestModeration")
     @Mapping(target = "title", source = "eventRequestDto.title")
-    @Mapping(target = "createdOn", expression = "java(LocalDateTime.now())")
+    @Mapping(
+            target = "createdOn",
+            expression = "java(java.time.LocalDateTime.now())"
+    )
     Event toEvent(EventNewDto eventRequestDto, User initiator, Category category);
 
     @Mapping(target = "id", source = "event.id")
     @Mapping(target = "annotation", source = "event.annotation")
-    @Mapping(target = "category", expression = "java(new CategoryOutputDto(event.getCategory().getId(), event.getCategory().getName()))")
+    @Mapping(
+            target = "category",
+            expression = "java(new ru.practicum.category.dto.CategoryOutputDto(event.getCategory().getId(), event.getCategory().getName()))"
+    )
     @Mapping(target = "confirmedRequests", source = "event.confirmedRequests")
     @Mapping(target = "eventDate", source = "event.eventDate")
-    @Mapping(target = "initiator", expression = "java(new UserDtoShort(event.getInitiator().getId(), event.getInitiator().getName()))")
+    @Mapping(
+            target = "initiator",
+            expression = "java(new ru.practicum.User.dto.UserDtoShort(event.getInitiator().getId(), event.getInitiator().getName()))"
+    )
     @Mapping(target = "paid", source = "event.paid")
     @Mapping(target = "title", source = "event.title")
     @Mapping(target = "views", expression = "java(0)")
@@ -45,12 +59,18 @@ public interface EventMapper {
 
     @Mapping(target = "id", source = "event.id")
     @Mapping(target = "annotation", source = "event.annotation")
-    @Mapping(target = "category", expression = "java(new CategoryOutputDto(event.getCategory().getId(), event.getCategory().getName()))")
+    @Mapping(
+            target = "category",
+            expression = "java(new ru.practicum.category.dto.CategoryOutputDto(event.getCategory().getId(), event.getCategory().getName()))"
+    )
     @Mapping(target = "confirmedRequests", source = "event.confirmedRequests")
     @Mapping(target = "createdOn", source = "event.createdOn")
     @Mapping(target = "description", source = "event.description")
     @Mapping(target = "eventDate", source = "event.eventDate")
-    @Mapping(target = "initiator", expression = "java(new UserDtoShort(event.getInitiator().getId(), event.getInitiator().getName()))")
+    @Mapping(
+            target = "initiator",
+            expression = "java(new ru.practicum.User.dto.UserDtoShort(event.getInitiator().getId(), event.getInitiator().getName()))"
+    )
     @Mapping(target = "location", source = "event.location")
     @Mapping(target = "paid", source = "event.paid")
     @Mapping(target = "participantLimit", source = "event.participantLimit")
@@ -62,6 +82,5 @@ public interface EventMapper {
     EventFullDto toEventFullDto(Event event);
 
     List<EventShortDto> toEventShortDtoList(List<Event> events);
-
     List<EventFullDto> toEventFullDtoList(List<Event> events);
 }
