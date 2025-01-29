@@ -2,17 +2,13 @@ package ru.practicum.event.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.User.dto.UserDtoShort;
 import ru.practicum.User.model.User;
-import ru.practicum.category.dto.CategoryOutputDto;
 import ru.practicum.category.model.Category;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventNewDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventState;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
