@@ -53,10 +53,10 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                 .orElseThrow(() -> new NotFoundException("Пользователя с id = {} не существует." + userId));
         ParticipationRequest requestValid = participationRequestRepository.findByRequesterIdAndEventId(userId, eventId);
         if (Objects.nonNull(requestValid) || event.getInitiator().getId().equals(user.getId())) {
-            throw new ConflictException("Пользователь является инициатором события или уже подал заявку на участие в событии.");
+            throw new ConflictException("Пользователь является инициатором события или уже подал заявку на участие.");
         }
         if (event.getParticipantLimit().equals(event.getConfirmedRequests()) && event.getParticipantLimit() != 0) {
-            throw new ConflictException("На данное мероприятие больше нет мест");
+            throw new ConflictException("На данное мероприятие больше нет мест.");
         }
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new ConflictException("Событие еще не было опубликовано.");
@@ -65,24 +65,24 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         request.setEvent(event);
         request.setRequester(user);
         request.setCreated(LocalDateTime.now());
-        if (event.getParticipantLimit() == 0 ||
-                (!event.getRequestModeration() && event.getParticipantLimit() > event.getConfirmedRequests())) {
+        if (event.getParticipantLimit() == 0
+                || (!event.getRequestModeration() && event.getParticipantLimit() > event.getConfirmedRequests())) {
             request.setStatus(ParticipationRequestStatus.CONFIRMED);
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-            eventRepository.save(event);
             ParticipationRequest newRequest = participationRequestRepository.save(request);
             log.info("Сохранение заявки на участие со статусом <ПОДТВЕРЖДЕНА>.");
             return participationRequestMapper.toParticipationRequestDto(newRequest);
         }
-        if (!event.getRequestModeration() && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
+        if (!event.getRequestModeration()
+                && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
             request.setStatus(ParticipationRequestStatus.REJECTED);
             ParticipationRequest newRequest = participationRequestRepository.save(request);
-            log.info("Сохранение заявки на участие со статусом <ОТМЕНЕНА>, в связи с превышением лимита.");
+            log.info("Сохранение заявки со статусом <ОТМЕНЕНА>, т.к. лимит достигнут.");
             return participationRequestMapper.toParticipationRequestDto(newRequest);
         }
         request.setStatus(ParticipationRequestStatus.PENDING);
         ParticipationRequest newRequest = participationRequestRepository.save(request);
-        log.info("Сохранение заявки на участие со статусом <В ОЖИДАНИИ>.");
+        log.info("Сохранение заявки со статусом <В ОЖИДАНИИ>.");
         return participationRequestMapper.toParticipationRequestDto(newRequest);
     }
 
@@ -93,16 +93,14 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         ParticipationRequest request = participationRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("Заявки с id = {} не существует." + requestId));
         if (!request.getRequester().equals(user)) {
-            throw new ConflictException("Отменить заявку может только пользователь иницировавший её.");
+            throw new ConflictException("Отменить заявку может только пользователь, иницировавший её.");
         }
         request.setStatus(ParticipationRequestStatus.CANCELED);
         ParticipationRequest requestCancel = participationRequestRepository.save(request);
         log.info("Заявка на участие с id = {} отменена.", requestId);
-
         Event event = request.getEvent();
         if (event.getRequestModeration()) {
             event.setConfirmedRequests(event.getConfirmedRequests() - 1);
-            eventRepository.save(event);
             log.info("Появилось свободное место у события с id = {}.", event.getId());
         }
         return participationRequestMapper.toParticipationRequestDto(requestCancel);
