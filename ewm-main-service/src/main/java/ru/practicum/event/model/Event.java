@@ -1,26 +1,18 @@
 package ru.practicum.event.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.User.model.User;
 import ru.practicum.category.model.Category;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,47 +22,59 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "initiator_id", nullable = false)
-    private User initiator; // Инициатор события
+    @JoinColumn(name = "initiator_id")
+    private User initiator;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category; // Категория события
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @Column(name = "confirmed_requests")
-    Integer confirmedRequests; //Количество одобренных заявок на участие в данном событии
+    private Integer confirmedRequests;
 
+    @NotNull
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", nullable = false)
-    private Location location; // место проведения события
+    @JoinColumn(name = "location_id")
+    private Location location;
 
-    private String title; // Название события
+    @NotNull
+    @Column(name = "title")
+    private String title;
 
-    private String annotation;  // Аннотация события
+    @NotNull
+    @Column(name = "annotation")
+    private String annotation;
 
-    private String description; // Описание события
+    @NotNull
+    @Column(name = "description")
+    private String description;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
-    private EventState state; // Состояние события
+    private EventState state;
 
-    @Column(name = "event_date", nullable = false)
-    private LocalDateTime eventDate; // Дата и время события
+    @NotNull
+    @Column(name = "event_date")
+    private LocalDateTime eventDate;
 
     @Column(name = "created_on")
-    private LocalDateTime createdOn; // Дата и время создания события
+    private LocalDateTime createdOn;
 
     @Column(name = "published_on")
-    private LocalDateTime publishedOn; // Дата и время публикации события
+    private LocalDateTime publishedOn;
 
     @Column(name = "participant_limit")
-    private Integer participantLimit; // Лимит участников
+    private Integer participantLimit;
 
-    private Boolean paid; // Платное событие
+    @NotNull
+    private Boolean paid;
 
+    @NotNull
     @Column(name = "request_moderation")
-    private Boolean requestModeration; // Модерация заявок
+    private Boolean requestModeration;
 
     @Transient
-    Integer views; // Количество просмотров события
+    private Integer views;
 }

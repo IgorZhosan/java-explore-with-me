@@ -55,6 +55,7 @@ public class EventControllerPrivate {
     }
 
     @PatchMapping("/{eventId}")
+    @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEvent(@PathVariable @Positive Long userId, @PathVariable @Positive Long eventId,
                                @RequestBody @Valid EventUpdateDto eventUpdateDto) {
         return eventService.updateEvent(userId, eventId, eventUpdateDto);

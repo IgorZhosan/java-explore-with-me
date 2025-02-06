@@ -6,11 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,9 +22,11 @@ public class Location {
     @Column(name = "location_id")
     private Long id;
 
-    @Column(nullable = false)
+    @NotNull
+    @Column
     private Float lat;
 
-    @Column(nullable = false)
+    @NotNull
+    @Column
     private Float lon;
 }

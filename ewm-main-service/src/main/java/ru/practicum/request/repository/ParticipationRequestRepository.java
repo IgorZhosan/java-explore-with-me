@@ -10,19 +10,21 @@ import ru.practicum.request.model.ParticipationRequestStatus;
 import java.util.List;
 
 public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, Long> {
-    ParticipationRequest findByRequesterIdAndEventId(final Long requesterId,
-                                                     final Long eventId);
 
-    List<ParticipationRequest> findByRequesterId(final Long requesterId);
+    ParticipationRequest findByRequesterIdAndEventId(Long requesterId,
+                                                     Long eventId);
 
-    List<ParticipationRequest> findByEventId(final Long eventId);
+    List<ParticipationRequest> findByRequesterId(Long requesterId);
 
-    List<ParticipationRequest> findRequestByIdIn(final List<Long> requestsId);
+    List<ParticipationRequest> findByEventId(Long eventId);
 
-    @Query(value = "SELECT new ru.practicum.request.dto.ConfirmedRequest(r.event.id, COUNT(r.id)) " +
-            "FROM ParticipationRequest r " +
-            "WHERE r.event.id IN (:eventIds) AND r.status = :status " +
-            "GROUP BY r.id, r.event.id " +
-            "ORDER BY r.id, r.event.id")
-    List<ConfirmedRequest> getConfirmedRequestsByStatus(@Param("eventIds") List<Long> eventIds, @Param("status") ParticipationRequestStatus status);
+    List<ParticipationRequest> findRequestByIdIn(List<Long> requestsId);
+
+    @Query(value = "SELECT new ru.practicum.request.dto.ConfirmedRequest(r.event.id, COUNT(r.id)) "
+            + "FROM ParticipationRequest r "
+            + "WHERE r.event.id IN (:eventIds) AND r.status = :status "
+            + "GROUP BY r.id, r.event.id "
+            + "ORDER BY r.id, r.event.id")
+    List<ConfirmedRequest> getConfirmedRequestsByStatus(@Param("eventIds") List<Long> eventIds,
+                                                        @Param("status") ParticipationRequestStatus status);
 }

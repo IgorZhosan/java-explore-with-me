@@ -19,10 +19,7 @@ import ru.practicum.event.dto.EventNewDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.EventUpdateDto;
 import ru.practicum.event.mapper.EventMapper;
-import ru.practicum.event.model.Event;
-import ru.practicum.event.model.EventState;
-import ru.practicum.event.model.Location;
-import ru.practicum.event.model.StateAction;
+import ru.practicum.event.model.*;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.repository.LocationRepository;
 import ru.practicum.exception.ConflictException;
@@ -385,7 +382,7 @@ public class EventServiceImpl implements EventService {
                                             String rangeStart,
                                             String rangeEnd,
                                             boolean onlyAvailable,
-                                            EventControllerPublic.EventSort sort,
+                                            EventSort sort,
                                             int from,
                                             int size,
                                             HttpServletRequest request) {
@@ -442,9 +439,9 @@ public class EventServiceImpl implements EventService {
         events.forEach(e -> e.setViews(Math.toIntExact(eventAndViews.getOrDefault(e.getId(), 0L))));
 
         if (Objects.nonNull(sort)) {
-            if (sort.equals(EventControllerPublic.EventSort.EVENT_DATE)) {
+            if (sort.equals(EventSort.EVENT_DATE)) {
                 events.sort(Comparator.comparing(Event::getEventDate));
-            } else if (sort.equals(EventControllerPublic.EventSort.VIEWS)) {
+            } else if (sort.equals(EventSort.VIEWS)) {
                 events.sort(Comparator.comparing(Event::getViews).reversed());
             }
         }

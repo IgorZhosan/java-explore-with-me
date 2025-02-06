@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
+import ru.practicum.event.model.EventSort;
 import ru.practicum.event.service.EventService;
 
 import java.util.List;
@@ -46,10 +47,5 @@ public class EventControllerPublic {
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getEventByIdPublic(@PathVariable Long eventId, HttpServletRequest request) {
         return eventService.getEventByIdPublic(eventId, request);
-    }
-
-    public enum EventSort {
-        EVENT_DATE,
-        VIEWS;
     }
 }

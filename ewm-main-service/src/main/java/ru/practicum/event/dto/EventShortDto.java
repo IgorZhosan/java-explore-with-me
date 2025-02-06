@@ -17,7 +17,7 @@ public class EventShortDto {
 
     private CategoryOutputDto category; // Категория события
 
-    Integer confirmedRequests; //Количество одобренных заявок на участие в данном событии
+    private Integer confirmedRequests; //Количество одобренных заявок на участие в данном событии
 
     private String title; // Название события
 
@@ -28,5 +28,5 @@ public class EventShortDto {
 
     private Boolean paid; // Платное событие
 
-    Integer views; // Количество просмотров события
+    private Integer views; // Количество просмотров события
 }
