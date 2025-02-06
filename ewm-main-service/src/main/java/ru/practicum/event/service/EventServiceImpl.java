@@ -13,7 +13,6 @@ import ru.practicum.User.model.User;
 import ru.practicum.User.repository.UserRepository;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
-import ru.practicum.event.controller.EventControllerPublic;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventNewDto;
 import ru.practicum.event.dto.EventShortDto;
