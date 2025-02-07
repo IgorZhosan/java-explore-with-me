@@ -10,6 +10,8 @@ import ru.practicum.event.model.StateAction;
 
 import java.time.LocalDateTime;
 
+import static ru.practicum.event.dto.EventFullDto.DATE_TIME_FORMAT;
+
 @Data
 public class EventUpdateDto {
 
@@ -23,7 +25,7 @@ public class EventUpdateDto {
     private String description;
 
     @Future
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT)
     private LocalDateTime eventDate;
 
     private Location location;
@@ -40,4 +42,3 @@ public class EventUpdateDto {
     @Size(min = 3, max = 120)
     private String title;
 }
-

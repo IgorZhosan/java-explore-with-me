@@ -68,6 +68,7 @@ public class EventControllerPrivate {
     }
 
     @PatchMapping("/{eventId}/requests")
+    @ResponseStatus(HttpStatus.OK)
     public Map<String, List<ParticipationRequestDto>> approveRequests(@PathVariable Long userId,
                                                                       @PathVariable Long eventId,
                                                                       @RequestBody @Valid EventRequestStatusUpdateRequest requestUpdateDto) {

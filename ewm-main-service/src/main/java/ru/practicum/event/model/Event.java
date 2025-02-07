@@ -1,6 +1,7 @@
 package ru.practicum.event.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,45 +19,47 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "events")
 public class Event {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "initiator_id")
+    @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     private Integer confirmedRequests;
 
     @NotNull
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-    @NotNull
-    @Column(name = "title")
+    @NotBlank
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @NotNull
-    @Column(name = "annotation")
+    @NotBlank
+    @Column(name = "annotation", nullable = false)
     private String annotation;
 
-    @NotNull
-    @Column(name = "description")
+    @NotBlank
+    @Column(name = "description", nullable = false)
     private String description;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EventState state;
 
     @NotNull
-    @Column(name = "event_date")
+    @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
 
     @Column(name = "created_on")
@@ -69,10 +72,11 @@ public class Event {
     private Integer participantLimit;
 
     @NotNull
+    @Column(nullable = false)
     private Boolean paid;
 
     @NotNull
-    @Column(name = "request_moderation")
+    @Column(name = "request_moderation", nullable = false)
     private Boolean requestModeration;
 
     @Transient

@@ -38,4 +38,3 @@ public interface EventService {
 
     EventFullDto getEventByIdPublic(Long eventId, HttpServletRequest request);
 }
-

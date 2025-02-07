@@ -49,9 +49,9 @@ public class CategoryServiceImpl implements CategoryService {
         if (Objects.nonNull(categoryInputDto.getName())) {
             category.setName(categoryInputDto.getName());
         }
-        Category categoryUpdate = categoryRepository.save(category);
-        log.info("Категория с id = {} обновлена.", categoryUpdate.getId());
-        return categoryMapper.toCategoryOutputDto(categoryUpdate);
+
+        log.info("Категория с id = {} обновлена.", catId);
+        return categoryMapper.toCategoryOutputDto(category);
     }
 
     @Override

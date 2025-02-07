@@ -13,19 +13,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ru.practicum.event.dto.EventFullDto.DATE_TIME_FORMAT;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class StatsServiceImpl implements StatsService {
 
     private static final String APP_NAME = "ewm-main-service";
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
     private final StatsClient statsClient;
 
     @Override
     public void createStats(final String uri, final String ip) {
-
         final StatDtoInput statDtoInput = new StatDtoInput();
         statDtoInput.setApp(APP_NAME);
         statDtoInput.setIp(ip);

@@ -12,38 +12,40 @@ import java.time.LocalDateTime;
 @Data
 public class EventFullDto {
 
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
     private Long id;
 
-    private UserDtoShort initiator; // Инициатор события
+    private UserDtoShort initiator;
 
-    private CategoryOutputDto category; // Категория события
+    private CategoryOutputDto category;
 
-    private Integer confirmedRequests; //Количество одобренных заявок на участие в данном событии
+    private Integer confirmedRequests;
 
-    private Location location; // место проведения события
+    private Location location;
 
-    private String title; // Название события
+    private String title;
 
-    private String annotation;  // Аннотация события
+    private String annotation;
 
-    private String description; // Описание события
+    private String description;
 
-    private EventState state; // Состояние события
+    private EventState state;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate; // Дата и время события
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT)
+    private LocalDateTime eventDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdOn; // Дата и время создания события
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT)
+    private LocalDateTime createdOn;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime publishedOn; // Дата и время публикации события
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_TIME_FORMAT)
+    private LocalDateTime publishedOn;
 
-    private Integer participantLimit; // Лимит участников
+    private Integer participantLimit;
 
-    private Boolean paid; // Платное событие
+    private Boolean paid;
 
-    private Boolean requestModeration; // Модерация заявок
+    private Boolean requestModeration;
 
-    Integer views; // Количество просмотров события
+    private Integer views;
 }

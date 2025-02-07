@@ -66,9 +66,8 @@ public class CompilationServiceImpl implements CompilationService {
         if (Objects.nonNull(compilationUpdateDto.getTitle())) {
             compilation.setTitle(compilationUpdateDto.getTitle());
         }
-        Compilation newCompilation = compilationRepository.save(compilation);
         log.info("Обновление данных подборки с id = {}.", compId);
-        return compilationMapper.toCompilationDto(newCompilation, events.stream()
+        return compilationMapper.toCompilationDto(compilation, events.stream()
                 .map(eventMapper::toEventShortDto)
                 .toList());
     }

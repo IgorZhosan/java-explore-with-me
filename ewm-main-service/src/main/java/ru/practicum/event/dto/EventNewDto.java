@@ -14,6 +14,8 @@ import ru.practicum.event.model.Location;
 
 import java.time.LocalDateTime;
 
+import static ru.practicum.event.dto.EventFullDto.DATE_TIME_FORMAT;
+
 @Data
 public class EventNewDto {
 
@@ -30,7 +32,7 @@ public class EventNewDto {
 
     @NotNull
     @Future
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime eventDate;
 
     @NotNull

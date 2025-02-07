@@ -6,6 +6,8 @@ import ru.practicum.request.model.ParticipationRequestStatus;
 
 import java.time.LocalDateTime;
 
+import static ru.practicum.event.dto.EventFullDto.DATE_TIME_FORMAT;
+
 @Data
 public class ParticipationRequestDto {
     private Long id;
@@ -16,6 +18,6 @@ public class ParticipationRequestDto {
 
     private ParticipationRequestStatus status;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime created;
 }
