@@ -31,7 +31,6 @@ public class StatController {
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
     public StatDtoInput createStat(@RequestBody @Valid StatDtoInput statDtoInput) {
-        // Логируем событие на русском языке
         log.info("Получен запрос на создание статистики: {}", statDtoInput);
 
         StatDtoInput createdStat = statService.createStat(statDtoInput);
@@ -43,11 +42,13 @@ public class StatController {
     @GetMapping("/stats")
     @ResponseStatus(HttpStatus.OK)
     public List<StatDtoOutput> getStats(
-            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDateTime start,
-            @RequestParam @DateTimeFormat(pattern = DATE_FORMAT) LocalDateTime end,
+            @RequestParam
+            @DateTimeFormat(pattern = DATE_FORMAT) LocalDateTime start,
+            @RequestParam
+            @DateTimeFormat(pattern = DATE_FORMAT) LocalDateTime end,
             @RequestParam(required = false) List<String> uris,
-            @RequestParam(defaultValue = "false") Boolean unique) {
-
+            @RequestParam(defaultValue = "false") Boolean unique
+    ) {
         log.info("Получен запрос на статистику: start={}, end={}, uris={}, unique={}",
                 start, end, uris, unique);
 
