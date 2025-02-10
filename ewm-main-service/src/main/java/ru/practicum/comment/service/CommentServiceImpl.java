@@ -21,7 +21,6 @@ import ru.practicum.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -78,17 +77,19 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long userId, Long commentId) {
-        Optional<Comment> optComment = commentRepository.findById(commentId);
-        if (optComment.isEmpty()) {
-            throw new NotFoundException("Комментарий с id=" + commentId + " не найден");
-        }
-        Comment comment = optComment.get();
-        // Тест для "чужого комментария" => 409
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Комментарий с id = " + commentId + " не найден"));
+
+
         if (!comment.getAuthor().getId().equals(userId)
                 && !comment.getEvent().getInitiator().getId().equals(userId)) {
-            throw new ConflictException("У пользователя " + userId + " нет прав на удаление чужого комментария");
+            throw new ConflictException("Удаление комментария доступно только автору или инициатору события.");
         }
+
+        // Удаляем
         commentRepository.deleteById(commentId);
+        log.info("Комментарий с id = {} удален.", commentId);
     }
 
     @Override
