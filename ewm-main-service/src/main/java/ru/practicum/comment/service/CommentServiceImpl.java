@@ -14,6 +14,7 @@ import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ConflictException;
+import ru.practicum.exception.NotFoundException;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
@@ -36,8 +37,8 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public List<CommentOutputDto> getAllComments(Long userId, Long eventId, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException(""));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException(""));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(""));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(""));
         List<Comment> comments = commentRepository.findByAuthorAndEvent(user, event, pageRequest);
         if (comments.isEmpty()) {
             return new ArrayList<>();
@@ -47,8 +48,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentOutputDto createComment(CommentInputDto commentInputDto, Long userId, Long eventId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException(""));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException(""));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(""));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(""));
         if (event.getState() != EventState.PUBLISHED) {
             throw new ConflictException("");
         }
@@ -60,9 +61,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentOutputDto updateComment(CommentInputDto commentInputDto, Long userId, Long commentId) {
         if (!userRepository.existsById(userId)) {
-            throw new RuntimeException("");
+            throw new NotFoundException("");
         }
-        Comment oldComment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException(""));
+        Comment oldComment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException(""));
         if (!oldComment.getAuthor().getId().equals(userId)) {
             throw new ConflictException("");
         }
@@ -72,8 +73,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long userId, Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException(""));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException(""));
         if (!comment.getAuthor().getId().equals(userId)
                 && !comment.getEvent().getInitiator().getId().equals(userId)) {
             throw new ConflictException("");
@@ -85,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public List<CommentOutputDto> getAllCommentsByEvent(Long eventId, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException(""));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(""));
         List<Comment> comments = commentRepository.findByEvent(event, pageRequest);
         if (comments.isEmpty()) {
             return new ArrayList<>();
@@ -96,7 +96,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public CommentOutputDto getCommentById(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException(""));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException(""));
         return commentMapper.toCommentOutputDto(comment);
     }
 
@@ -110,10 +110,10 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentOutputDto> searchComments(Long userId, Long eventId, String text, Integer from, Integer size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
         if (!userRepository.existsById(userId)) {
-            throw new RuntimeException("");
+            throw new NotFoundException("");
         }
         if (!eventRepository.existsById(eventId)) {
-            throw new RuntimeException("");
+            throw new NotFoundException("");
         }
         if (text.isBlank()) {
             return Collections.emptyList();
