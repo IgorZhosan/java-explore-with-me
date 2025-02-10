@@ -33,30 +33,14 @@ public class CommentServiceImpl implements CommentService {
     private final EventRepository eventRepository;
     private final CommentMapper commentMapper;
 
-    /**
-     * При GET/UPDATE нужно 404, если комментария нет.
-     */
-    private Comment getCommentOr404(Long commentId) {
-        return commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Комментарий не найден")); // код 404
-    }
-
-    /**
-     * При DELETE несуществующего комментария нужно 500.
-     */
-    private Comment getCommentOr500(Long commentId) {
-        return commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("Нет комментария => 500")); // код 500
-    }
-
     @Override
     @Transactional(readOnly = true)
     public List<CommentOutputDto> getAllComments(Long userId, Long eventId, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден")); // 404
+                .orElseThrow(() -> new NotFoundException(""));
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие не найдено")); // 404
+                .orElseThrow(() -> new NotFoundException(""));
         List<Comment> comments = commentRepository.findByAuthorAndEvent(user, event, pageRequest);
         if (comments.isEmpty()) {
             return new ArrayList<>();
@@ -67,24 +51,26 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentOutputDto createComment(CommentInputDto commentInputDto, Long userId, Long eventId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден")); // 404
+                .orElseThrow(() -> new NotFoundException(""));
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие не найдено")); // 404
+                .orElseThrow(() -> new NotFoundException(""));
         if (event.getState() != EventState.PUBLISHED) {
-            throw new ConflictException(""); // 409
+            throw new ConflictException("");
         }
-        Comment comment = commentMapper.toComment(commentInputDto, user, event);
-        return commentMapper.toCommentOutputDto(commentRepository.save(comment));
+        Comment newComment = commentMapper.toComment(commentInputDto, user, event);
+        Comment savedComment = commentRepository.save(newComment);
+        return commentMapper.toCommentOutputDto(savedComment);
     }
 
     @Override
     public CommentOutputDto updateComment(CommentInputDto commentInputDto, Long userId, Long commentId) {
         if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("Пользователь не найден"); // 404
+            throw new NotFoundException("");
         }
-        Comment oldComment = getCommentOr404(commentId); // 404, если не существует
+        Comment oldComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException(""));
         if (!oldComment.getAuthor().getId().equals(userId)) {
-            throw new ConflictException(""); // 409
+            throw new ConflictException("");
         }
         oldComment.setText(commentInputDto.getText());
         return commentMapper.toCommentOutputDto(oldComment);
@@ -92,10 +78,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long userId, Long commentId) {
-        Comment comment = getCommentOr500(commentId); // 500, если не существует
+        boolean exists = commentRepository.existsById(commentId);
+        if (!exists) {
+            // "Удаление несуществующего комментария" => 500
+            throw new RuntimeException("");
+        }
+        Comment comment = commentRepository.findById(commentId).get();
+        // "Удаление комментария пользователь не автор" => 409
         if (!comment.getAuthor().getId().equals(userId)
                 && !comment.getEvent().getInitiator().getId().equals(userId)) {
-            throw new ConflictException(""); // 409
+            throw new ConflictException("");
         }
         commentRepository.deleteById(commentId);
     }
@@ -105,7 +97,7 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentOutputDto> getAllCommentsByEvent(Long eventId, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие не найдено")); // 404
+                .orElseThrow(() -> new NotFoundException(""));
         List<Comment> comments = commentRepository.findByEvent(event, pageRequest);
         if (comments.isEmpty()) {
             return new ArrayList<>();
@@ -116,7 +108,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public CommentOutputDto getCommentById(Long commentId) {
-        Comment comment = getCommentOr404(commentId); // 404, если не существует
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException(""));
         return commentMapper.toCommentOutputDto(comment);
     }
 
@@ -130,10 +123,10 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentOutputDto> searchComments(Long userId, Long eventId, String text, Integer from, Integer size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
         if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("Пользователь не найден"); // 404
+            throw new NotFoundException("");
         }
         if (!eventRepository.existsById(eventId)) {
-            throw new NotFoundException("Событие не найдено"); // 404
+            throw new NotFoundException("");
         }
         if (text.isBlank()) {
             return Collections.emptyList();
