@@ -22,6 +22,7 @@ import ru.practicum.category.service.CategoryService;
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/categories")
 public class CategoryControllerAdmin {
+
     private final CategoryService categoryService;
 
     @PostMapping

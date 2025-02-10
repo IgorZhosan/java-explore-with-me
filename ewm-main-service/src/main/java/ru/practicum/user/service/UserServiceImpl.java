@@ -1,15 +1,15 @@
-package ru.practicum.User.service;
+package ru.practicum.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.User.dto.UserDtoInput;
-import ru.practicum.User.dto.UserDtoOutput;
-import ru.practicum.User.mapper.UserMapper;
-import ru.practicum.User.model.User;
-import ru.practicum.User.repository.UserRepository;
+import ru.practicum.user.dto.UserDtoInput;
+import ru.practicum.user.dto.UserDtoOutput;
+import ru.practicum.user.mapper.UserMapper;
+import ru.practicum.user.model.User;
+import ru.practicum.user.repository.UserRepository;
 import ru.practicum.exception.DuplicatedDataException;
 
 import java.util.List;

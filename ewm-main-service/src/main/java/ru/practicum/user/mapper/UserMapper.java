@@ -1,11 +1,11 @@
-package ru.practicum.User.mapper;
+package ru.practicum.user.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import ru.practicum.User.dto.UserDtoInput;
-import ru.practicum.User.dto.UserDtoOutput;
-import ru.practicum.User.model.User;
+import ru.practicum.user.dto.UserDtoInput;
+import ru.practicum.user.dto.UserDtoOutput;
+import ru.practicum.user.model.User;
 
 import java.util.List;
 
