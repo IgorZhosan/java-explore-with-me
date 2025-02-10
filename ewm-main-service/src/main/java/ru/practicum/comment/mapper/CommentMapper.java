@@ -9,6 +9,7 @@ import ru.practicum.comment.model.Comment;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {EventMapper.class})
