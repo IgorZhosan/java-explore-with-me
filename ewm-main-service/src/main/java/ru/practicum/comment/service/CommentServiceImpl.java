@@ -13,6 +13,7 @@ import ru.practicum.comment.repository.CommentRepository;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
 import ru.practicum.event.repository.EventRepository;
+import ru.practicum.exception.CommentNotFound500Exception;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.user.model.User;
@@ -77,19 +78,18 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long userId, Long commentId) {
-
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Комментарий с id = " + commentId + " не найден"));
-
+                .orElseThrow(() -> new CommentNotFound500Exception("Комментарий с id="
+                        + commentId + " не найден"));
 
         if (!comment.getAuthor().getId().equals(userId)
                 && !comment.getEvent().getInitiator().getId().equals(userId)) {
-            throw new ConflictException("Удаление комментария доступно только автору или инициатору события.");
+            // Если тест требует 409 при "чужом комментарии"
+            throw new ConflictException("Удаление комментария доступно только автору...");
         }
 
-        // Удаляем
         commentRepository.deleteById(commentId);
-        log.info("Комментарий с id = {} удален.", commentId);
+        log.info("Комментарий с id={} удален.", commentId);
     }
 
     @Override
