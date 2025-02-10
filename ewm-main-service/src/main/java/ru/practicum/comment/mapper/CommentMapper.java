@@ -9,7 +9,6 @@ import ru.practicum.comment.model.Comment;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {EventMapper.class})
@@ -22,7 +21,7 @@ public interface CommentMapper {
     @Mapping(target = "created", expression = "java(java.time.LocalDateTime.now())")
     Comment toComment(CommentInputDto commentInputDto, User user, Event event);
 
-    @Mapping(target = "event", expression = "java(EventMapper.toEventShortDto(comment.getEvent()))")
+    @Mapping(target = "event", source = "comment.event", qualifiedByName = "toEventShortDto")
     @Mapping(target = "authorName", source = "author.name")
     CommentOutputDto toCommentOutputDto(Comment comment);
 
