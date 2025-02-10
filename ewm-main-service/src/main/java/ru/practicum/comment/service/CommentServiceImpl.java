@@ -78,14 +78,20 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long userId, Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFound500Exception("Комментарий с id="
-                        + commentId + " не найден"));
+
+        if (!userRepository.existsById(userId)) {
+            throw new ConflictException("Пользователь не найден => 409");
+        }
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+
+        if (comment == null) {
+            throw new CommentNotFound500Exception("Комментарий не существует => 500");
+        }
 
         if (!comment.getAuthor().getId().equals(userId)
                 && !comment.getEvent().getInitiator().getId().equals(userId)) {
-            // Если тест требует 409 при "чужом комментарии"
-            throw new ConflictException("Удаление комментария доступно только автору...");
+            throw new ConflictException("Пользователь не автор => 409");
         }
 
         commentRepository.deleteById(commentId);
