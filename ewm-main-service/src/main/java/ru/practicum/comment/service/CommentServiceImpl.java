@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.user.model.User;
-import ru.practicum.user.repository.UserRepository;
 import ru.practicum.comment.dto.CommentInputDto;
 import ru.practicum.comment.dto.CommentOutputDto;
 import ru.practicum.comment.mapper.CommentMapper;
@@ -17,6 +15,8 @@ import ru.practicum.event.model.EventState;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.user.model.User;
+import ru.practicum.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,131 +37,88 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public List<CommentOutputDto> getAllComments(Long userId, Long eventId, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не существует."));
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие с id = " + eventId + " не существует."));
-
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(""));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(""));
         List<Comment> comments = commentRepository.findByAuthorAndEvent(user, event, pageRequest);
         if (comments.isEmpty()) {
-            log.info("У пользователя с id={} нет комментариев к событию с id={}.", userId, eventId);
             return new ArrayList<>();
         }
-
-        log.info("Получен список комментариев пользователя с id={} к событию с id={}.", userId, eventId);
         return commentMapper.toCommentOutputDtoList(comments);
     }
 
     @Override
     public CommentOutputDto createComment(CommentInputDto commentInputDto, Long userId, Long eventId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не существует."));
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие с id = " + eventId + " не существует."));
-
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(""));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(""));
         if (event.getState() != EventState.PUBLISHED) {
-            throw new ConflictException("Невозможно написать комментарий к неопубликованному событию.");
+            throw new ConflictException("");
         }
-
         Comment newComment = commentMapper.toComment(commentInputDto, user, event);
         Comment savedComment = commentRepository.save(newComment);
-
-        log.info("Комментарий к событию с id={} добавлен пользователем с id={}.", eventId, userId);
         return commentMapper.toCommentOutputDto(savedComment);
     }
 
     @Override
     public CommentOutputDto updateComment(CommentInputDto commentInputDto, Long userId, Long commentId) {
-        Comment oldComment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Комментарий с id = " + commentId + " не существует."));
-
         if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("Пользователь с id = " + userId + " не существует.");
+            throw new NotFoundException("");
         }
-
+        Comment oldComment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException(""));
         if (!oldComment.getAuthor().getId().equals(userId)) {
-            throw new ConflictException("Редактирование доступно только автору комментария.");
+            throw new ConflictException("");
         }
-
         oldComment.setText(commentInputDto.getText());
-
-        log.info("Комментарий с id={} обновлён пользователем с id={}.", commentId, userId);
         return commentMapper.toCommentOutputDto(oldComment);
     }
 
     @Override
     public void deleteComment(Long userId, Long commentId) {
-
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Комментарий с id = " + commentId + " не существует."));
-
-
-        if (!comment.getAuthor().getId().equals(userId) &&
-                !comment.getEvent().getInitiator().getId().equals(userId)) {
-            throw new ConflictException("Удалять комментарий может только его автор или инициатор события.");
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException(""));
+        if (!comment.getAuthor().getId().equals(userId) && !comment.getEvent().getInitiator().getId().equals(userId)) {
+            throw new ConflictException("");
         }
-
         commentRepository.deleteById(commentId);
-        log.info("Комментарий с id={} удалён пользователем с id={}.", commentId, userId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CommentOutputDto> getAllCommentsByEvent(Long eventId, int from, int size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
-
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException("Событие с id = " + eventId + " не существует."));
-
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(""));
         List<Comment> comments = commentRepository.findByEvent(event, pageRequest);
         if (comments.isEmpty()) {
-            log.info("У события с id={} нет комментариев.", eventId);
             return new ArrayList<>();
         }
-
-        log.info("Получен список комментариев к событию с id={}.", eventId);
         return commentMapper.toCommentOutputDtoList(comments);
     }
 
     @Override
     @Transactional(readOnly = true)
     public CommentOutputDto getCommentById(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Комментарий с id = " + commentId + " не существует."));
-        log.info("Получен комментарий по id={}.", commentId);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException(""));
         return commentMapper.toCommentOutputDto(comment);
     }
 
     @Override
     public void deleteCommentByAdmin(Long eventId) {
-
         commentRepository.deleteById(eventId);
-        log.info("Комментарий, связанный с событием id={}, удалён администратором.", eventId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CommentOutputDto> searchComments(Long userId, Long eventId, String text, Integer from, Integer size) {
         PageRequest pageRequest = PageRequest.of(from / size, size);
-
         if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("Пользователь с id = " + userId + " не существует.");
+            throw new NotFoundException("");
         }
         if (!eventRepository.existsById(eventId)) {
-            throw new NotFoundException("Событие с id = " + eventId + " не существует.");
+            throw new NotFoundException("");
         }
-
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-
-        List<Comment> comments = commentRepository
-                .findAllByAuthorIdAndEventIdAndTextContainingIgnoreCase(userId, eventId, text, pageRequest);
-
-        log.info("Поиск комментариев по тексту '{}' для userId={}, eventId={}. Найдено: {}",
-                text, userId, eventId, comments.size());
-
+        List<Comment> comments = commentRepository.findAllByAuthorIdAndEventIdAndTextContainingIgnoreCase(
+                userId, eventId, text, pageRequest);
         return commentMapper.toCommentOutputDtoList(comments);
     }
 }
