@@ -80,14 +80,13 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long userId, Long commentId) {
         Optional<Comment> optComment = commentRepository.findById(commentId);
         if (optComment.isEmpty()) {
-            // Тест для "не существующего комментария" => 500
-            throw new RuntimeException("");
+            throw new NotFoundException("Комментарий с id=" + commentId + " не найден");
         }
         Comment comment = optComment.get();
         // Тест для "чужого комментария" => 409
         if (!comment.getAuthor().getId().equals(userId)
                 && !comment.getEvent().getInitiator().getId().equals(userId)) {
-            throw new ConflictException("");
+            throw new ConflictException("У пользователя " + userId + " нет прав на удаление чужого комментария");
         }
         commentRepository.deleteById(commentId);
     }
