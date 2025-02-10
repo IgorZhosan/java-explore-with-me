@@ -21,6 +21,7 @@ import ru.practicum.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -58,8 +59,7 @@ public class CommentServiceImpl implements CommentService {
             throw new ConflictException("");
         }
         Comment newComment = commentMapper.toComment(commentInputDto, user, event);
-        Comment savedComment = commentRepository.save(newComment);
-        return commentMapper.toCommentOutputDto(savedComment);
+        return commentMapper.toCommentOutputDto(commentRepository.save(newComment));
     }
 
     @Override
@@ -78,13 +78,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long userId, Long commentId) {
-        boolean exists = commentRepository.existsById(commentId);
-        if (!exists) {
-            // "Удаление несуществующего комментария" => 500
+        Optional<Comment> optComment = commentRepository.findById(commentId);
+        if (optComment.isEmpty()) {
+            // Тест для "не существующего комментария" => 500
             throw new RuntimeException("");
         }
-        Comment comment = commentRepository.findById(commentId).get();
-        // "Удаление комментария пользователь не автор" => 409
+        Comment comment = optComment.get();
+        // Тест для "чужого комментария" => 409
         if (!comment.getAuthor().getId().equals(userId)
                 && !comment.getEvent().getInitiator().getId().equals(userId)) {
             throw new ConflictException("");
