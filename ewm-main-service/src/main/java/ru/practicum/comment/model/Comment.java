@@ -3,7 +3,7 @@ package ru.practicum.comment.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.practicum.User.model.User;
+import ru.practicum.user.model.User;
 import ru.practicum.event.model.Event;
 
 import java.time.LocalDateTime;

@@ -2,7 +2,7 @@ package ru.practicum.comment.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.User.model.User;
+import ru.practicum.user.model.User;
 import ru.practicum.comment.dto.CommentInputDto;
 import ru.practicum.comment.dto.CommentOutputDto;
 import ru.practicum.comment.model.Comment;

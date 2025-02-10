@@ -2,7 +2,7 @@ package ru.practicum.comment.repository;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.User.model.User;
+import ru.practicum.user.model.User;
 import ru.practicum.comment.model.Comment;
 import ru.practicum.event.model.Event;
 

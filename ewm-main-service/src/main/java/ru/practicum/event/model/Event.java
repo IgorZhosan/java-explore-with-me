@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.User.model.User;
+import ru.practicum.user.model.User;
 import ru.practicum.category.model.Category;
 
 import java.time.LocalDateTime;

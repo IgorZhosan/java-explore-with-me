@@ -3,13 +3,13 @@ package ru.practicum.event.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import ru.practicum.User.model.User;
+import ru.practicum.user.model.User;
 import ru.practicum.category.model.Category;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventNewDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.model.Event;
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -37,7 +37,7 @@ public interface EventMapper {
     @Mapping(target = "category", expression = "java(new ru.practicum.category.dto.CategoryOutputDto(event.getCategory().getId(), event.getCategory().getName()))")
     @Mapping(target = "confirmedRequests", source = "event.confirmedRequests")
     @Mapping(target = "eventDate", source = "event.eventDate")
-    @Mapping(target = "initiator", expression = "java(new ru.practicum.User.dto.UserDtoShort(event.getInitiator().getId(), event.getInitiator().getName()))")
+    @Mapping(target = "initiator", expression = "java(new ru.practicum.user.dto.UserDtoShort(event.getInitiator().getId(), event.getInitiator().getName()))")
     @Mapping(target = "paid", source = "event.paid")
     @Mapping(target = "title", source = "event.title")
     @Mapping(target = "views", expression = "java(0)")
@@ -50,7 +50,7 @@ public interface EventMapper {
     @Mapping(target = "createdOn", source = "event.createdOn")
     @Mapping(target = "description", source = "event.description")
     @Mapping(target = "eventDate", source = "event.eventDate")
-    @Mapping(target = "initiator", expression = "java(new ru.practicum.User.dto.UserDtoShort(event.getInitiator().getId(), event.getInitiator().getName()))")
+    @Mapping(target = "initiator", expression = "java(new ru.practicum.user.dto.UserDtoShort(event.getInitiator().getId(), event.getInitiator().getName()))")
     @Mapping(target = "location", source = "event.location")
     @Mapping(target = "paid", source = "event.paid")
     @Mapping(target = "participantLimit", source = "event.participantLimit")

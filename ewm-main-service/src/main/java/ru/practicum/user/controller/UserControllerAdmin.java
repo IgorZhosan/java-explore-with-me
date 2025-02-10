@@ -1,4 +1,4 @@
-package ru.practicum.User.controller;
+package ru.practicum.user.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.User.dto.UserDtoInput;
-import ru.practicum.User.dto.UserDtoOutput;
-import ru.practicum.User.service.UserService;
+import ru.practicum.user.dto.UserDtoInput;
+import ru.practicum.user.dto.UserDtoOutput;
+import ru.practicum.user.service.UserService;
 
 import java.util.List;
 
