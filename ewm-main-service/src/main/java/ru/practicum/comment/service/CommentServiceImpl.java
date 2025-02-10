@@ -63,9 +63,10 @@ public class CommentServiceImpl implements CommentService {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("");
         }
-        Comment oldComment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException(""));
+        Comment oldComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("")); // 500 для «нет такого комментария»
         if (!oldComment.getAuthor().getId().equals(userId)) {
-            throw new ConflictException("");
+            throw new ConflictException(""); // 409, если пользователь не автор
         }
         oldComment.setText(commentInputDto.getText());
         return commentMapper.toCommentOutputDto(oldComment);
@@ -73,10 +74,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long userId, Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException(""));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("")); // 500 для «нет такого комментария»
         if (!comment.getAuthor().getId().equals(userId)
                 && !comment.getEvent().getInitiator().getId().equals(userId)) {
-            throw new ConflictException("");
+            throw new ConflictException(""); // 409, если не автор и не инициатор
         }
         commentRepository.deleteById(commentId);
     }
@@ -96,7 +98,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public CommentOutputDto getCommentById(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException(""));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("")); // 500 для «нет такого комментария»
         return commentMapper.toCommentOutputDto(comment);
     }
 
@@ -118,8 +121,8 @@ public class CommentServiceImpl implements CommentService {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        List<Comment> comments = commentRepository.findAllByAuthorIdAndEventIdAndTextContainingIgnoreCase(
-                userId, eventId, text, pageRequest);
+        List<Comment> comments = commentRepository
+                .findAllByAuthorIdAndEventIdAndTextContainingIgnoreCase(userId, eventId, text, pageRequest);
         return commentMapper.toCommentOutputDtoList(comments);
     }
 }
