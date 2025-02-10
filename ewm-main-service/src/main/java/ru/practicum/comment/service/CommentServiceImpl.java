@@ -73,7 +73,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long userId, Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException(""));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Комментарий не найден."));
         if (!comment.getAuthor().getId().equals(userId) && !comment.getEvent().getInitiator().getId().equals(userId)) {
             throw new ConflictException("");
         }
