@@ -13,7 +13,6 @@ import ru.practicum.comment.repository.CommentRepository;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
 import ru.practicum.event.repository.EventRepository;
-import ru.practicum.exception.CommentNotFound500Exception;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.user.model.User;
@@ -77,25 +76,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long userId, Long commentId) {
+    public void deleteComment(final Long userId, final Long commentId) {
+        final List<Comment> comments = commentRepository.findAll();
+        final Comment comment = comments.get(Math.toIntExact(commentId));
 
-        if (!userRepository.existsById(userId)) {
-            throw new ConflictException("Пользователь не найден => 409");
-        }
-
-        Comment comment = commentRepository.findById(commentId).orElse(null);
-
-        if (comment == null) {
-            throw new CommentNotFound500Exception("Комментарий не существует => 500");
-        }
-
-        if (!comment.getAuthor().getId().equals(userId)
-                && !comment.getEvent().getInitiator().getId().equals(userId)) {
-            throw new ConflictException("Пользователь не автор => 409");
+        if (!comment.getAuthor().getId().equals(userId) &&
+                !comment.getAuthor().getId().equals(comment.getEvent().getInitiator().getId())) {
+            throw new ConflictException("Удаление комментария доступно только его автору или инициатору события.");
         }
 
         commentRepository.deleteById(commentId);
-        log.info("Комментарий с id={} удален.", commentId);
+        log.info("Комментарий с id = {} удален.", commentId);
     }
 
     @Override

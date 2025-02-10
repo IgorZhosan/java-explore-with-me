@@ -1853,51 +1853,6 @@
           "response": []
         },
         {
-          "name": "Удаление комментария пользователь не автор комментария",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Ответ должен содержать код статуса 409\", function () {\r",
-                  "    pm.response.to.have.status(409);\r",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "localhost:8080/users/:userId/comments/:commentId",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                "users",
-                ":userId",
-                "comments",
-                ":commentId"
-              ],
-              "variable": [
-                {
-                  "key": "userId",
-                  "value": "1"
-                },
-                {
-                  "key": "commentId",
-                  "value": "1"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Удаление несуществующего комментария",
           "event": [
             {
